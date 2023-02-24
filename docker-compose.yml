@@ -1,0 +1,46 @@
+version: "3.7"
+services: 
+  api:
+    #image: api-archi-node
+    container_name: api-archi-node
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # command: npm run start
+    # working_dir: /app
+    volumes:
+      - ./src:/app/src
+    restart: always
+    ports: 
+      - 3000:3000
+      
+
+
+  postgres:
+    image: postgres:15.1-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: ylearn
+    volumes:
+      - postgres-data:/var/lib/postgresql/data 
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+        - postgres
+    restart: always
+    ports: 
+        - 8080:80
+    environment:
+        PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+        PGADMIN_DEFAULT_PASSWORD: admin
+
+volumes:
+  postgres-data: 
+# networks:
+#   app-network:
+#     driver: bridge
